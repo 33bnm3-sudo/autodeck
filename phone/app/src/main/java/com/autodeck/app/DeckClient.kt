@@ -38,6 +38,7 @@ private class NoDelaySocketFactory : SocketFactory() {
 class DeckClient(
     context: Context,
     private val onLayout: (JSONObject) -> Unit,
+    private val onVolumeSync: (Float) -> Unit,
     private val onStatus: (String) -> Unit
 ) {
     private val prefs = context.applicationContext.getSharedPreferences("autodeck", Context.MODE_PRIVATE)
@@ -106,6 +107,13 @@ class DeckClient(
                         onStatus(if (timedOut) "Approval timed out" else "Connection denied on PC")
                     }
                     "layout" -> onLayout(json)
+                    // 볼륨만 바뀌었을 때 오는 가벼운 메시지 - 아이콘까지 담긴 전체
+                    // layout을 다시 안 그리고 볼륨만 갱신한다(드래그 중엔 초당
+                    // 여러 번 올 수 있어서, 매번 layout으로 처리하면 느려진다).
+                    "volume-sync" -> {
+                        val level = json.optDouble("volume", -1.0)
+                        if (level >= 0.0) onVolumeSync(level.toFloat())
+                    }
                 }
             }
 

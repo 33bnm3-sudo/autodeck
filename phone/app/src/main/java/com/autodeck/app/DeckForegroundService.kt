@@ -21,6 +21,7 @@ class DeckForegroundService : Service() {
 
     interface Listener {
         fun onLayout(json: JSONObject)
+        fun onVolumeSync(volume: Float)
         fun onStatus(text: String)
     }
 
@@ -31,6 +32,7 @@ class DeckForegroundService : Service() {
     private val binder = LocalBinder()
     private var listener: Listener? = null
     private var lastLayout: JSONObject? = null
+    private var lastVolume: Float? = null
     private var lastStatus: String = "Searching for PC..."
 
     lateinit var deckClient: DeckClient
@@ -56,6 +58,10 @@ class DeckForegroundService : Service() {
             onLayout = { json ->
                 lastLayout = json
                 listener?.onLayout(json)
+            },
+            onVolumeSync = { volume ->
+                lastVolume = volume
+                listener?.onVolumeSync(volume)
             },
             onStatus = { text ->
                 val name = currentDeviceName
@@ -116,6 +122,7 @@ class DeckForegroundService : Service() {
     fun setListener(l: Listener?) {
         listener = l
         lastLayout?.let { l?.onLayout(it) }
+        lastVolume?.let { l?.onVolumeSync(it) }
         l?.onStatus(lastStatus)
     }
 

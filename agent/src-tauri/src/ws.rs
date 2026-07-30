@@ -133,13 +133,15 @@ async fn handle_connection(stream: TcpStream, state: Arc<AppState>, app: AppHand
                                 Some("volume") => {
                                     if let Some(level) = value.get("level").and_then(|l| l.as_f64()) {
                                         crate::mediactl::set_volume_raw(level as f32);
-                                        let layout = state.layout_json().await;
+                                        // 드래그 중 초당 여러 번 오는 메시지라, 아이콘까지 포함된
+                                        // 전체 layout을 매번 다시 보내지 않고 볼륨값만 담아 보낸다.
+                                        let sync = state.volume_sync_json();
                                         // PC's own window isn't a WS client of itself, so
                                         // broadcast_layout alone never reaches it - a phone
                                         // changing volume would otherwise leave the PC dial's
                                         // local `volume` stale until it starts its own drag.
-                                        let _ = app.emit("remote-layout", &layout);
-                                        state.broadcast_layout(layout);
+                                        let _ = app.emit("remote-layout", &sync);
+                                        state.broadcast_layout(sync);
                                     }
                                 }
                                 _ => {}

@@ -133,6 +133,17 @@ impl AppState {
         serde_json::to_string(&layout).unwrap_or_default()
     }
 
+    // 드래그 중 초당 여러 번 나갈 수 있는 볼륨 변경 전용 가벼운 메시지 -
+    // layout_json()처럼 아이콘 base64까지 포함된 수백 KB짜리 buttons 배열을
+    // 매번 다시 만들어 보내면(버튼 배치는 안 바뀌었는데도) 느려진다.
+    pub fn volume_sync_json(&self) -> String {
+        serde_json::json!({
+            "type": "volume-sync",
+            "volume": crate::mediactl::get_volume_raw()
+        })
+        .to_string()
+    }
+
     pub fn broadcast_layout(&self, json: String) {
         let _ = self.layout_tx.send(json);
     }

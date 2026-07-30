@@ -128,6 +128,10 @@ class MainActivity : AppCompatActivity(), DeckForegroundService.Listener {
         runOnUiThread { applyLayout(json) }
     }
 
+    override fun onVolumeSync(volume: Float) {
+        runOnUiThread { radialView?.updateVolumeBaseline(volume) }
+    }
+
     override fun onStatus(text: String) {
         runOnUiThread { statusText?.text = text }
     }

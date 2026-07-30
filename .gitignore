@@ -6,6 +6,7 @@ agent/.svelte-kit/
 # Rust / Tauri
 agent/src-tauri/target/
 agent/src-tauri/gen/schemas/
+agent/dist/
 *.pdb
 
 # Android / Gradle

@@ -25,19 +25,25 @@
 
 ### PC
 - 메모장/계산기 트레이, 폴더/파일 열기 속도 개선, 중복 실행 방지, 이미 실행 중인 앱 최전면 이동, 드래그앤드랍 저장 원자적 쓰기.
-- 프로덕션 설치파일 빌드 성공: MSI + NSIS, x64와 ARM64 둘 다. 설치 시 Windows 방화벽 허용 규칙을 자동으로 추가하는 NSIS 훅(`windows/installer.nsh`).
+- 프로덕션 빌드 성공: 포터블 exe(설치 없이 바로 실행, `agent/dist/`)를 기본 배포 방식으로 채택. MSI + NSIS 인스톨러도 x64/ARM64 둘 다 만들어짐(원하는 사람용, 방화벽 규칙 자동 추가 NSIS 훅 `windows/installer.nsh` 포함).
 
 ## ⚠️ 사용자가 직접 해야 하는 것
 
-### 1. 방화벽 규칙 정리 (지금 바로)
-테스트 중 release exe 경로에 Windows가 자동으로 **차단** 규칙을 만들었음. 관리자 권한 PowerShell에서 한 번:
+### 1. 방화벽 규칙 정리 (이 PC에서 테스트하면서 생긴 것, 한 번만)
+내가 이 PC에서 자동화로 반복 테스트하다가 release exe 경로에 Windows가 실수로 **차단** 규칙을 만들어버렸어(진짜 사용자는 이런 일 안 생김 — 정상적으로 실행하면 Windows가 알아서 허용/차단을 물어보는 팝업을 띄워줌). 이 PC에서만 정리하면 됨, 관리자 권한 PowerShell에서 한 번:
 ```powershell
 Remove-NetFirewallRule -DisplayName "autodeck" -ErrorAction SilentlyContinue
 ```
 
-### 2. 인스톨러 설치 테스트 (UAC 필요해서 직접 확인해줘야 함)
-- x64(대부분의 PC): `D:\.cargo-target\x86_64-pc-windows-msvc\release\bundle\nsis\autodeck_0.1.0_x64-setup.exe`
-- ARM64(이 컴퓨터): `D:\.cargo-target\release\bundle\nsis\autodeck_0.1.0_arm64-setup.exe`
+### 2. 배포 방식을 포터블 exe 위주로 바꿈
+설치 마법사(UAC 필요)가 낯선 사람한텐 겁먹기 쉽다고 판단해서, **그냥 다운받아 바로 실행하는 포터블 exe**를 기본 배포 방식으로 바꿨어 — `agent/dist/AutoDeck-x64.exe` / `AutoDeck-arm64.exe`(설치 절차 없음, 관리자 권한도 필요 없음). 방화벽은 Windows 자체의 표준 "이 앱의 네트워크 통신을 허용하시겠습니까?" 팝업이 첫 실행 때 자동으로 뜨는데(이건 어떤 정상적인 로컬 네트워크 앱이든 다 뜨는 흔한 절차라 오히려 신뢰감 있음), 여기서 "액세스 허용" 누르면 끝 — 방화벽 규칙을 몰래 심는 설치 스크립트보다 이 편이 더 투명하고 안전해 보임.
+
+기존 NSIS/MSI 인스톨러도 그대로 만들어지긴 함(Start Menu 바로가기·제거 프로그램 원하는 사람용, 방화벽 규칙도 설치 시 자동 추가됨) — 필요하면 아래 위치에 있음:
+- x64: `D:\.cargo-target\x86_64-pc-windows-msvc\release\bundle\nsis\autodeck_0.1.0_x64-setup.exe`
+- ARM64: `D:\.cargo-target\release\bundle\nsis\autodeck_0.1.0_arm64-setup.exe`
+
+**주의**: 포터블 exe든 인스톨러든, 코드서명이 없는 이상 SmartScreen "알 수 없는 게시자" 경고는 똑같이 뜸(패키징 방식이 아니라 서명 여부 문제라서) — 아래 3번 참고.
+**아직 못 한 것**: 아주 오래된 Windows 10(WebView2 런타임이 없는 경우)에서 포터블 exe가 빈 화면으로 뜨는지는 확인 못 함 — 인스톨러는 WebView2를 자동 설치해주지만 포터블은 그 단계가 없음. Windows 11과 최신 Windows 10은 기본 내장이라 대부분은 문제없음.
 
 ### 3. 코드 서명 (구매는 내가 못 함 — 결제라서)
 서명 안 하면 설치 시 "알 수 없는 게시자" SmartScreen 경고가 뜸(막히진 않고 "추가 정보 → 실행"으로 넘어갈 수 있지만 낯선 사람 상대로는 이탈률 커짐).

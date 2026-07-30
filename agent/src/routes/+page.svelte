@@ -1208,7 +1208,7 @@
 	.pair-overlay {
 		position: absolute;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.6);
+		background: rgba(8, 8, 10, 0.94);
 		display: flex;
 		align-items: center;
 		justify-content: center;

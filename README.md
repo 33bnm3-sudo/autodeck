@@ -16,7 +16,11 @@ Grab the latest build from the [Releases](https://github.com/33bnm3-sudo/autodec
 - **Windows PC**: `AutoDeck-x64.exe` (most PCs) or `AutoDeck-arm64.exe` (ARM64 PCs, e.g. Snapdragon-based) — no installer, just download and double-click to run. An installer (`setup.exe`/`.msi`) is also provided if you'd rather have a Start Menu entry and uninstaller.
 - **Android**: `autodeck.apk` — you'll need to allow "install from unknown sources" since this isn't on the Play Store
 
-The exe isn't code-signed yet, so Windows may show an "Unknown publisher" SmartScreen warning on first run — click "More info → Run anyway." (This applies to both the portable exe and the installer; it's about code signing, not how it's packaged.)
+The exe isn't code-signed yet, so Windows may show a SmartScreen warning on first run. This is expected — it just means the app hasn't built up download history with Microsoft yet, not that it's unsafe. Click through it like this:
+
+![How to run past the Windows SmartScreen warning](docs/smartscreen-guide.png)
+
+(This applies to both the portable exe and the installer — it's about code signing, not how it's packaged.)
 
 ## Setup
 

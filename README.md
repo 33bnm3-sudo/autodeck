@@ -34,6 +34,10 @@ See [`PROTOCOL.md`](PROTOCOL.md) for the phone↔PC wire protocol, and [`STATUS.
 - **PC agent** (`agent/`): Tauri 2 + SvelteKit (Svelte 5) + Rust. `npm install` then `npm run tauri dev` to run, `npm run tauri build` for a release installer.
 - **Phone app** (`phone/`): Kotlin, native Android. `./gradlew assembleDebug` (needs `JAVA_HOME` pointed at a JDK, e.g. Android Studio's bundled `jbr`).
 
+## Privacy
+
+No cloud, no account, no telemetry — see [PRIVACY.md](PRIVACY.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

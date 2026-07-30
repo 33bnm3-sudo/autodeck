@@ -1,0 +1,28 @@
+# Node / SvelteKit
+agent/node_modules/
+agent/build/
+agent/.svelte-kit/
+
+# Rust / Tauri
+agent/src-tauri/target/
+agent/src-tauri/gen/schemas/
+*.pdb
+
+# Android / Gradle
+phone/build/
+phone/app/build/
+phone/.gradle/
+phone/local.properties
+phone/.idea/
+*.iml
+
+# Runtime data (lives in the user's AppData, never in the repo)
+buttons.json
+paired_devices.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
